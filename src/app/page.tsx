@@ -8,20 +8,20 @@ import { CategoryList } from '@/components/ui/layout/category-list'
 import { ProductList } from '@/components/ui/layout/product-list'
 import { BottomNav } from '@/components/ui/layout/bottom-nav'
 
-
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
-  const [categories] = useState<Category[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsResponse] = await Promise.all([
+        const [productsResponse, categoriesResponse] = await Promise.all([
           getProducts(),
           getCategories()
         ])
         setProducts(productsResponse.data)
+        setCategories(categoriesResponse.data)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -48,16 +48,12 @@ export default function Home() {
 
         <section>
           <h2 className="text-base font-medium text-gray-900 mb-4">Categorias</h2>
-          <CategoryList categories={categories} />
+          <CategoryList categories={categories} isLoading={loading} />
         </section>
 
         <section>
           <h2 className="text-base font-medium text-gray-900 mb-4">Os mais populares</h2>
-          {loading ? (
-            <p>Carregando produtos...</p>
-          ) : (
-            <ProductList products={products} />
-          )}
+          <ProductList products={products} isLoading={loading} />
         </section>
       </div>
       <BottomNav />

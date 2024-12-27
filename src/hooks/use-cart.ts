@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import Cookies from 'js-cookie';
 
 interface CartStore {
   items: CartItem[];
@@ -10,37 +11,52 @@ interface CartStore {
   clearCart: () => void;
 }
 
+const CART_COOKIE_KEY = 'cart_items';
+
+const saveCartItemsToCookie = (items: CartItem[]) => {
+  Cookies.set(CART_COOKIE_KEY, JSON.stringify(items), { expires: 7 }); // Cookies expire in 7 days
+};
+
+const loadCartItemsFromCookie = (): CartItem[] => {
+  const cookie = Cookies.get(CART_COOKIE_KEY);
+  return cookie ? JSON.parse(cookie) : [];
+};
+
 export const useCart = create<CartStore>((set) => ({
-  items: [],
+  items: loadCartItemsFromCookie(),
   addToCart: (product) =>
     set((state) => {
       const existingItem = state.items.find((item) => item.id === product.id);
 
-      if (existingItem) {
-        return {
-          items: state.items.map((item) =>
+      const updatedItems = existingItem
+        ? state.items.map((item) =>
             item.id === product.id
               ? { ...item, quantity: item.quantity + 1 }
               : item
-          ),
-        };
-      }
+          )
+        : [...state.items, { ...product, product, quantity: 1 }];
 
-      return {
-        items: [...state.items, { ...product, product, quantity: 1 }],
-      };
+      saveCartItemsToCookie(updatedItems);
+      return { items: updatedItems };
     }),
   removeFromCart: (productId) =>
-    set((state) => ({
-      items: state.items.filter((item) => item.id !== productId),
-    })),
+    set((state) => {
+      const updatedItems = state.items.filter((item) => item.id !== productId);
+      saveCartItemsToCookie(updatedItems);
+      return { items: updatedItems };
+    }),
   updateQuantity: (productId, quantity) =>
-    set((state) => ({
-      items: state.items.map((item) =>
+    set((state) => {
+      const updatedItems = state.items.map((item) =>
         item.id === productId ? { ...item, quantity } : item
-      ),
-    })),
-  clearCart: () => set({ items: [] }),
+      );
+      saveCartItemsToCookie(updatedItems);
+      return { items: updatedItems };
+    }),
+  clearCart: () => {
+    saveCartItemsToCookie([]);
+    return { items: [] };
+  },
 }));
 
 export interface Category {
