@@ -1,31 +1,73 @@
-// types.ts
-export interface Product {
-  id?: string;
+export interface Category {
+  id: string;
   name: string;
-  price: number;
-  stock: number;
-  category: string;
-  availability: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  icon: string;
+  slug: string;
 }
 
-export interface OrderProduct {
-  productId: string;
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: Category;
+  stock: number;
+  availability: boolean;
+}
+
+export interface CartItem extends Product {
+  product: Product;
   quantity: number;
+}
+
+export interface CustomerDetails {
+  name: string;
+  phone: string;
+  address: string;
+  neighborhood: string;
+  deliveryType: 'delivery' | 'pickup';
+}
+
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+export interface OrderStatus {
+  id: number;
+  status: 'PENDENTE' | 'PREPARANDO' | 'ENVIADO' | 'CANCELADO';
+  timestamp: Date;
+}
+
+export interface EntregasBairros {
+  id: string;
+  name: string;
+  value: number;
 }
 
 export interface Order {
   id: string;
-  name: string;
-  phone: string;
+  products: CartItem[];
   total: number;
-  status: string;
-  createdAt: string;
   address: string;
   paymentMethod: string;
+  name: string;
+  phone: string;
+  status: 'PENDENTE' | 'PREPARANDO' | 'ENVIADO' | 'CANCELADO';
   deliveryMethod: string;
-  products: OrderProduct[];
-  updatedAt?: string;
-  
+  neighborhoodId?: string;
+  changeFor?: number;
+}
+
+export interface OrderRequest {
+  products: { productId: string; quantity: number }[];
+  address: string;
+  paymentMethod: string;
+  name: string;
+  phone: string;
+  deliveryMethod: 'delivery' | 'pickup';
+  neighborhoodId?: string;
+  changeFor?: number;
+  total: number;
 }
