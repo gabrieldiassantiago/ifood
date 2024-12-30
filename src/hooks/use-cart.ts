@@ -1,5 +1,4 @@
-'use client';
-
+// hooks/use-cart.ts
 import { create } from 'zustand';
 import Cookies from 'js-cookie';
 
@@ -31,7 +30,7 @@ export const useCart = create<CartStore>((set) => ({
       const updatedItems = existingItem
         ? state.items.map((item) =>
             item.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + 1, additions: product.additions, observation: product.observation }
               : item
           )
         : [...state.items, { ...product, product, quantity: 1 }];
@@ -74,6 +73,8 @@ export interface Product {
   category: Category;
   stock: number;
   availability: boolean;
+  additions?: Addition[];
+  observation?: string;
 }
 
 export interface CartItem extends Product {
@@ -119,4 +120,10 @@ export interface Order {
   deliveryMethod: string;
   neighborhoodId?: string;
   changeFor?: number;
+}
+
+export interface Addition {
+  id: string;
+  name: string;
+  price: number;
 }

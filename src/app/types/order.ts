@@ -15,9 +15,17 @@ export interface Product {
   availability: boolean;
 }
 
+export interface Addition {
+  id: string;
+  name: string;
+  price: number;
+}
+
 export interface CartItem extends Product {
   product: Product;
   quantity: number;
+  additions?: Addition[];
+  observation?: string;
 }
 
 export interface CustomerDetails {
@@ -57,8 +65,10 @@ export interface Order {
   status: 'PENDENTE' | 'PREPARANDO' | 'ENVIADO' | 'CANCELADO';
   deliveryMethod: string;
   neighborhoodId?: string;
+  neighborhood?: EntregasBairros;
   changeFor?: number;
 }
+
 
 export interface OrderRequest {
   products: { productId: string; quantity: number }[];

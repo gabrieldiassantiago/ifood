@@ -1,8 +1,9 @@
+// services/api.ts
 import axios from 'axios';
-import { Category, EntregasBairros, Order, OrderRequest, Product } from '../types/order';
+import { Category, EntregasBairros, Order, OrderRequest, Product, Addition } from '../types/order';
 
 const api = axios.create({
-  baseURL: 'https://order-back-1.onrender.com',
+  baseURL: 'http://localhost:3000',
 });
 
 export const getProducts = () => api.get<Product[]>('/products');
@@ -15,5 +16,6 @@ export const createOrder = async (orderData: OrderRequest) => {
 export const getOrders = () => api.get<Order[]>('/orders');
 export const getOrder = (orderId: string) => api.get<Order>(`/orders/${orderId}`);
 export const getOrdersByPhone = (phone: string) => api.get<Order[]>(`/orders/status/${phone}`);
+export const getAdditions = () => api.get<Addition[]>('/addition');
 
-export default api; 
+export default api;

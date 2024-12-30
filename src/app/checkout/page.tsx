@@ -55,12 +55,16 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
+  
     try {
       const orderData = {
         products: items.map(item => ({
           productId: item.id,
-          quantity: item.quantity
+          quantity: item.quantity,
+          additions: item.additions?.map(addition => ({
+            additionId: addition.id,
+            price: addition.price
+          })) || []
         })),
         address: details.address,
         paymentMethod: paymentMethod,
@@ -71,7 +75,7 @@ export default function CheckoutPage() {
         changeFor: paymentMethod === 'cash' ? parseFloat(changeAmount) : undefined,
         total: total
       }
-
+  
       const response = await createOrder(orderData)
       clearCart()
       router.push(`/sucess/${response.data.id}`)
@@ -104,9 +108,21 @@ export default function CheckoutPage() {
         <div className="bg-white rounded-2xl p-6 shadow-xl space-y-6">
           <h2 className="text-xl font-medium text-gray-900">Resumo do pedido</h2>
           {items.map((item) => (
-            <div key={item.id} className="flex justify-between items-center">
-              <span className="text-gray-700">{item.name} x {item.quantity}</span>
-              <span className="text-gray-700">R$ {(item.price * item.quantity).toFixed(2)}</span>
+            <div key={item.id} className="flex flex-col space-y-1">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">{item.name} x {item.quantity}</span>
+                <span className="text-gray-700">R$ {(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+              {item.additions && item.additions.length > 0 && (
+                <div className="pl-4 text-sm text-gray-500">
+                  <span>Acréscimos:</span>
+                  <ul className="list-disc list-inside">
+                    {item.additions.map((addition) => (
+                      <li key={addition.id}>{addition.name} - R$ {addition.price.toFixed(2)}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ))}
           <div className="border-t pt-4">

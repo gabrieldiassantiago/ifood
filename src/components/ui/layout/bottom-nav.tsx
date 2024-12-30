@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, ShoppingCart, User, MessageCircle } from 'lucide-react'
+import { Home, ShoppingCart, User } from 'lucide-react'
 import { useCart } from '@/hooks/use-cart'
 import { motion } from 'framer-motion'
 
