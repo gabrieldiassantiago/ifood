@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Category, EntregasBairros, Order, OrderRequest, Product, Addition } from '../types/order';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'https://order-back-1.onrender.com',
 });
 
 export const getProducts = () => api.get<Product[]>('/products');
